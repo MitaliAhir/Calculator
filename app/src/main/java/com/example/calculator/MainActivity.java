@@ -1,5 +1,6 @@
 package com.example.calculator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -67,6 +68,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Button to go to the History Activity
+        findViewById(R.id.btnVersion).setOnClickListener(v -> {
+            // Pass history to HistoryActivity
+            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            String history = getHistoryAsString(); // Get history as string
+            intent.putExtra("history", history);
+            startActivity(intent); // Start the new activity
+        });
+
     }//OnCreate ends
 
     // Set up same listener for all number buttons
@@ -123,6 +133,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Update the TextView to show the full history
         historyView.setText(historyText.toString());
+    }
+
+    // Get the history as a single string to pass to the next Activity
+    private String getHistoryAsString() {
+        List<String> history = calculator.getHistory();
+        StringBuilder historyText = new StringBuilder();
+        for (String entry : history) {
+            historyText.append(entry).append("\n");
+        }
+        return historyText.toString();
     }
 
 }
