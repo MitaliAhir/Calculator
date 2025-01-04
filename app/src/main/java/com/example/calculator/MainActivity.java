@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,14 +12,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView display;
     private TextView historyView;
-    private Button version;
-    private ToggleButton toggleHistory;
+    private SwitchMaterial switchHistory;
     private CalBrain calculator;
 
     @Override
@@ -40,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
         // Capture display textview and version button from layout
         display = (TextView) findViewById(R.id.display);
         historyView = (TextView) findViewById(R.id.history);
-        version = (Button) findViewById(R.id.btnVersion);
-        toggleHistory = findViewById(R.id.toggleHistory);
+        switchHistory = findViewById(R.id.switchHistory);
 
         // Setup number buttons
         setUpButtonListeners(R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4,
@@ -50,14 +49,14 @@ public class MainActivity extends AppCompatActivity {
         // Setup operator buttons
         setUpOperatorButtons(R.id.btnAdd, R.id.btnSubtract, R.id.btnMultiply, R.id.btnDivide);
 
-        // Clear and equals button
+        // Clear button
         findViewById(R.id.btnClear).setOnClickListener(v -> clear());
 
-        // Calculate
+        // Equal button
         findViewById(R.id.btnEquals).setOnClickListener(v -> calculate());
 
         // Toggle history visibility when the button is clicked
-        toggleHistory.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switchHistory.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 // Show the history if toggle is checked
                 updateHistory();
@@ -72,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btnVersion).setOnClickListener(v -> {
             // Pass history to HistoryActivity
             Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-            String history = getHistoryAsString(); // Get history as string
+            String history = getHistoryAsString();
             intent.putExtra("history", history);
-            startActivity(intent); // Start the new activity
+            startActivity(intent);
         });
 
     }//OnCreate ends
@@ -86,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 Button button = (Button) v;
                 calculator.appendNumber(button.getText().toString());
                 display.setText(calculator.getCurrentInput()); // Show button pressed
-                //display.append(button.getText().toString() + " ");
             });
         }
     }
@@ -97,9 +95,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(id).setOnClickListener(v -> {
                 Button button = (Button) v;
                 calculator.setOperator(button.getText().toString());
-                //display.setText(calculator.getCurrentInput() + " " + button.getText().toString());
                 display.setText(calculator.getCurrentInput());
-                //display.append(button.getText().toString() + " ");
             });
         }
     }
@@ -109,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         String result = calculator.calculate();
         display.setText(result);
         // If the history is visible, update the history
-        if (toggleHistory.isChecked()) {
+        if (switchHistory.isChecked()) {
             updateHistory();
         }
     }
