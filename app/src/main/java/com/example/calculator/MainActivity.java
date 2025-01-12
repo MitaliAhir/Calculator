@@ -76,6 +76,18 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        if (savedInstanceState != null) {
+            // Restore the state from the savedInstanceState
+            String savedData = savedInstanceState.getString("inputData");
+            String savedHistory = savedInstanceState.getString("historyData");
+            if(savedData != null) {
+                display.setText(savedData);
+            }
+            if (savedHistory != null){
+                historyView.setText(savedHistory);
+            }
+        }
+
     }//OnCreate ends
 
     // Set up same listener for all number buttons
@@ -139,6 +151,17 @@ public class MainActivity extends AppCompatActivity {
             historyText.append(entry).append("\n");
         }
         return historyText.toString();
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Save the current input data
+        if(display != null){
+            outState.putString("inputData", display.getText().toString());
+        }
+        if(historyView != null){
+            outState.putString("historyData", historyView.getText().toString());
+        }
     }
 
 }
